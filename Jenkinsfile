@@ -32,11 +32,11 @@ pipeline {
         }
 
        stage("Quality Gate"){
+           def qg = waitForQualityGate()
            steps
            {
-                timeout(time: 1, unit: 'MINUTES') {
-              def qg = waitForQualityGate()
-              if (qg.status != 'OK') {
+              timeout(time: 1, unit: 'MINUTES') {
+                if (qg.status != 'OK') {
                   error "Pipeline aborted due to quality gate failure: ${qg.status}"
                   slackSend baseUrl: 'https://hooks.slack.com/services/', channel: 'build', color: 'danger', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", tokenCredentialId: 'slack-integration'
               }
