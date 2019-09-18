@@ -38,8 +38,7 @@ pipeline {
                 slackSend baseUrl: 'https://hooks.slack.com/services/', channel: 'build', color: 'danger', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", tokenCredentialId: 'slack-integration'
               }
             }
-          }
-      }        
+          }       
           
     }
     post {
