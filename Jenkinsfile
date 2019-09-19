@@ -26,7 +26,7 @@ pipeline {
           {
             withSonarQubeEnv ('Sonar')
             {
-              sh 'mvn sonar:sonar   -Dsonar.host.url=http://localhost:9000   -Dsonar.login=b898832120c088619205a7fc9bd221c92b1cde86'
+              sh 'mvn sonar:sonar -Dsonar.projectKey=devops-demo -Dsonar.host.url=http://localhost:9000 -Dsonar.login=2c6d7ae3a260791ea85d63dca84e1fb8dd2310cd'
             }
           }
         }
