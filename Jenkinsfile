@@ -49,7 +49,7 @@ pipeline {
     }
     post {
         always {
-        
+        echo 'I always'
         }
         
         success {
