@@ -1,44 +1,35 @@
 pipeline {
     agent any
-    stages {
+    node {
         
         stage('Compile Stage') {
-             steps {
-                 sh 'mvn clean compile'
-             }      
+            sh 'mvn clean compile'     
         }
 
         stage('Test Stage') {
-             steps {
-                 sh 'mvn test'
-             }      
+          sh 'mvn test'      
         }
         
         stage('Clean Install Stage') {
-             steps {
-                 sh 'mvn clean install'
-             }  
+           sh 'mvn clean install'  
         }
         
         stage('SonarQube Check')
         {
-          steps
-          {
-            withSonarQubeEnv ('Sonar')
+         withSonarQubeEnv ('Sonar')
             {
               sh 'mvn sonar:sonar -Dsonar.projectKey=devops-demo -Dsonar.host.url=http://localhost:9000 -Dsonar.login=2c6d7ae3a260791ea85d63dca84e1fb8dd2310cd'
             }
-          }
         }
 
-       stage("Quality Gate") {
-            steps {
-              timeout(time: 25, unit: 'SECONDS') {
-                waitForQualityGate abortPipeline: true
-                slackSend baseUrl: 'https://hooks.slack.com/services/', channel: 'build', color: 'danger', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", tokenCredentialId: 'slack-integration'
+         stage("Quality Gate"){
+          timeout(time: 1, unit: 'HOURS') {
+              def qg = waitForQualityGate()
+              if (qg.status != 'OK') {
+                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
               }
-            }
-          }       
+          }
+      }              
           
     }
     post {
