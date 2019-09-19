@@ -1,27 +1,36 @@
 pipeline {
     agent any
-    nodes {
-
+    stages {
+        
         stage('Compile Stage') {
-            sh 'mvn clean compile'     
+             steps {
+                 sh 'mvn clean compile'
+             }      
         }
 
         stage('Test Stage') {
-          sh 'mvn test'      
+             steps {
+                 sh 'mvn test'
+             }      
         }
         
         stage('Clean Install Stage') {
-           sh 'mvn clean install'  
+             steps {
+                 sh 'mvn clean install'
+             }  
         }
         
         stage('SonarQube Check')
         {
-         withSonarQubeEnv ('Sonar')
+          steps
+          {
+            withSonarQubeEnv ('Sonar')
             {
               sh 'mvn sonar:sonar -Dsonar.projectKey=devops-demo -Dsonar.host.url=http://localhost:9000 -Dsonar.login=2c6d7ae3a260791ea85d63dca84e1fb8dd2310cd'
             }
+          }
         }
-
+        
          stage("Quality Gate"){
           timeout(time: 1, unit: 'HOURS') {
               def qg = waitForQualityGate()
