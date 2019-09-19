@@ -36,22 +36,19 @@ pipeline {
             {
                 script
                 {
-                    timeout(time: 1, unit: 'HOURS') {
-              def qg = waitForQualityGate()
-              if (qg.status != 'SUCCESS') {
+                 timeout(time: 1, unit: 'HOURS') {
+                  def qg = waitForQualityGate()
+                   if (qg.status != 'OK') {
                   /* error "Pipeline aborted due to quality gate failure: ${qg.status}" */
-                   slackSend baseUrl: 'https://hooks.slack.com/services/', channel: 'build', color: 'bad', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})", tokenCredentialId: 'slack-integration'
-              }
-          }
+                  }
+                 }
                 }
-            } 
+               } 
       }              
              
     }
     post {
         always {
-    
-        slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})") 
         
         }
         
@@ -64,7 +61,7 @@ pipeline {
         }
         
         failure {
-          slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            echo 'I am failed :/'
         }
         
         changed {
